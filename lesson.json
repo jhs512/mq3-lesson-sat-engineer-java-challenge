@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "sat-engineer-java-challenge",
-  "revision": "v1.0.0",
+  "revision": "v1.0.1",
   "title": "Java · 초기화와 호출 순서를 풀어요",
   "description": "예상한 뒤 실행으로 이유를 확인해요. 필수 5문제와 선택 도전 1문제예요.",
   "sources": [
@@ -43,7 +43,7 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Box {\n        static int base;\n        // 객체가 만들어지는 순간의 base를 저장해요.\n        int value = base + 1;\n        Box() { base += 10; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Box.base = n;\n        // value 초기화 뒤 생성자가 base를 늘려요.\n        Box item = new Box();\n        System.out.println(Box.base);\n    }\n}\n",
-          "say": "준비 코드를 먼저 실행해 볼게요."
+          "say": "먼저 준비 코드를 실행해 볼게요."
         },
         {
           "action": "run",
@@ -52,7 +52,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 13"
+          "text": "지금은 클래스의 공유 필드만 출력해요. 객체를 만들며 바뀐 개인 필드를 봐야 해요."
         },
         {
           "action": "say",
@@ -63,7 +63,7 @@
           "action": "patch_code",
           "before": "System.out.println(Box.base);",
           "after": "System.out.println(item.value);",
-          "say": "작은 부분을 바꿔 원리를 확인해요."
+          "say": "생성된 객체의 필드를 읽어요. 필드 초기화 뒤 생성자가 한 일을 확인해요."
         },
         {
           "action": "run"
@@ -71,7 +71,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 4"
+          "text": "객체에 남은 최종값을 확인하세요. 초기화식과 생성자의 실행 순서를 따라가야 해요."
         },
         {
           "action": "submit"
@@ -105,7 +105,7 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static int seed;\n    static class Box {\n        // 최초 사용 때 한 번 실행해요.\n        static int total;\n        static { total = Main.seed + 1; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Main.seed = n;\n        // 처음 사용될 때 Box의 static 초기화가 실행돼요.\n        Box a = new Box();\n        Box b = new Box();\n        System.out.println(a.total + \" \" + b.total);\n    }\n}\n",
-          "say": "준비 코드를 먼저 실행해 볼게요."
+          "say": "먼저 준비 코드를 실행해 볼게요."
         },
         {
           "action": "run",
@@ -114,7 +114,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 4 4"
+          "text": "클래스 초기화에서 시작값에 하나를 더했어요. 문제에서 요구한 시작값과 달라요."
         },
         {
           "action": "say",
@@ -125,7 +125,7 @@
           "action": "patch_code",
           "before": "total = Main.seed + 1;",
           "after": "total = Main.seed;",
-          "say": "작은 부분을 바꿔 원리를 확인해요."
+          "say": "지정한 시작값 그대로 공유 필드에 넣어요. 객체마다 다른 값을 만드는 게 아니에요."
         },
         {
           "action": "run"
@@ -133,7 +133,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 3 3"
+          "text": "두 객체로 읽은 공유값을 비교하세요. static 초기화는 클래스 초기화 때 한 번이에요."
         },
         {
           "action": "submit"
@@ -167,7 +167,7 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Base {\n        static int shared;\n        static int read() { return shared; }\n    }\n    static class Child extends Base {\n        // static 메서드 숨김이에요.\n        static int read() { return shared + 10; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Base.shared = n;\n        // 실제 객체는 Child지만 참조 타입은 Base예요.\n        Base ref = new Child();\n        System.out.println(Child.read());\n    }\n}\n",
-          "say": "준비 코드를 먼저 실행해 볼게요."
+          "say": "먼저 준비 코드를 실행해 볼게요."
         },
         {
           "action": "run",
@@ -176,7 +176,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 13"
+          "text": "자식 클래스 이름으로 static 메서드를 골랐어요. 실제 객체의 메서드를 고르는 호출과 달라요."
         },
         {
           "action": "say",
@@ -187,7 +187,7 @@
           "action": "patch_code",
           "before": "System.out.println(Child.read());",
           "after": "System.out.println(ref.read());",
-          "say": "작은 부분을 바꿔 원리를 확인해요."
+          "say": "부모 자료형인 참조를 통해 호출해요. static 메서드는 참조의 선언 자료형을 따라요."
         },
         {
           "action": "run"
@@ -195,7 +195,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 3"
+          "text": "부모 쪽 메서드의 결과가 나왔는지 보세요. static 메서드 숨김은 오버라이딩과 달라요."
         },
         {
           "action": "submit"
@@ -229,7 +229,7 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Base {\n        static int shared;\n        int read() { return shared; }\n    }\n    static class Child extends Base {\n        // 실제 Child 객체의 메서드가 실행돼요.\n        int read() { return shared + 10; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Base.shared = n;\n        Base ref = new Child();\n        // 부모를 새로 만들지 않고 준비된 객체를 호출해요.\n        System.out.println(new Base().read());\n    }\n}\n",
-          "say": "준비 코드를 먼저 실행해 볼게요."
+          "say": "먼저 준비 코드를 실행해 볼게요."
         },
         {
           "action": "run",
@@ -238,7 +238,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 3"
+          "text": "새 부모 객체의 메서드를 부르고 있어요. 준비된 참조가 가리키는 객체는 사용하지 않아요."
         },
         {
           "action": "say",
@@ -249,7 +249,7 @@
           "action": "patch_code",
           "before": "new Base().read()",
           "after": "ref.read()",
-          "say": "작은 부분을 바꿔 원리를 확인해요."
+          "say": "ref가 가리키는 객체의 메서드를 불러요. 인스턴스 메서드의 선택을 확인해요."
         },
         {
           "action": "run"
@@ -257,7 +257,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 13"
+          "text": "실제 자식 객체의 메서드가 실행됐어요. 인스턴스 메서드는 오버라이딩된 동작을 따라요."
         },
         {
           "action": "submit"
@@ -291,7 +291,7 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Box {\n        // 같은 객체를 가리키면 같은 value를 읽어요.\n        int value;\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Box a = new Box();\n        a.value = n;\n        // 새 객체 대신 같은 참조를 전달해요.\n        Box b = new Box();\n        b.value += 2;\n        System.out.println(a.value);\n    }\n}\n",
-          "say": "준비 코드를 먼저 실행해 볼게요."
+          "say": "먼저 준비 코드를 실행해 볼게요."
         },
         {
           "action": "run",
@@ -300,7 +300,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 3"
+          "text": "객체를 새로 만들면 두 참조는 다른 칸을 가리켜요. 한쪽 변경이 다른 쪽에 전달되지 않아요."
         },
         {
           "action": "say",
@@ -311,7 +311,7 @@
           "action": "patch_code",
           "before": "Box b = new Box();",
           "after": "Box b = a;",
-          "say": "작은 부분을 바꿔 원리를 확인해요."
+          "say": "새 객체 대신 a의 참조를 b에 복사해요. 두 이름이 같은 객체를 가리키게 해요."
         },
         {
           "action": "run"
@@ -319,7 +319,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 5"
+          "text": "한쪽에서 바꾼 값을 다른 쪽에서도 읽어요. 객체를 복사한 게 아니라 참조를 복사했어요."
         },
         {
           "action": "submit"
@@ -353,7 +353,7 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Ticket {\n        static int next;\n        int number;\n        Ticket() {\n            // 현재 번호를 저장한 다음 공통 번호를 늘려요.\n            number = next;\n            next++;\n        }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Ticket.next = n;\n        Ticket a = new Ticket();\n        Ticket b = new Ticket();\n        // 각 객체에 저장한 번호의 차이를 구해요.\n        System.out.println(Ticket.next - a.number + n);\n    }\n}\n",
-          "say": "준비 코드를 먼저 실행해 볼게요."
+          "say": "먼저 준비 코드를 실행해 볼게요."
         },
         {
           "action": "run",
@@ -362,7 +362,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 5"
+          "text": "현재 공유값을 식에 사용하고 있어요. 나중에 만들어진 객체의 번호와는 다른 값이에요."
         },
         {
           "action": "say",
@@ -373,7 +373,7 @@
           "action": "patch_code",
           "before": "Ticket.next - a.number + n",
           "after": "b.number - a.number + n",
-          "say": "작은 부분을 바꿔 원리를 확인해요."
+          "say": "두 객체의 개인 번호로 차이를 구해요. 생성 시 저장한 번호를 비교하는 거예요."
         },
         {
           "action": "run"
@@ -381,7 +381,7 @@
         {
           "action": "say",
           "target": "output",
-          "text": "실행 결과를 비교해요. 4"
+          "text": "공유값과 각 객체의 번호를 따로 확인하세요. 생성 이후 공유값이 바뀌어도 저장한 번호는 남아요."
         },
         {
           "action": "submit"
