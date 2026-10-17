@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "sat-engineer-java-challenge",
-  "revision": "v1.0.1",
+  "revision": "v1.0.2",
   "title": "Java · 초기화와 호출 순서를 풀어요",
   "description": "예상한 뒤 실행으로 이유를 확인해요. 필수 5문제와 선택 도전 1문제예요.",
   "sources": [
@@ -43,21 +43,54 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Box {\n        static int base;\n        // 객체가 만들어지는 순간의 base를 저장해요.\n        int value = base + 1;\n        Box() { base += 10; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Box.base = n;\n        // value 초기화 뒤 생성자가 base를 늘려요.\n        Box item = new Box();\n        System.out.println(Box.base);\n    }\n}\n",
-          "say": "먼저 준비 코드를 실행해 볼게요."
-        },
-        {
-          "action": "run",
-          "expected_failure": false
-        },
-        {
-          "action": "say",
-          "target": "output",
-          "text": "지금은 클래스의 공유 필드만 출력해요. 객체를 만들며 바뀐 개인 필드를 봐야 해요."
+          "say": "먼저 입력과 변수의 연결을 살펴봐요.",
+          "lines": [
+            5,
+            5
+          ]
         },
         {
           "action": "say",
           "target": "editor",
-          "text": "조심하세요. 나중에 base를 바꿔도 이미 저장한 value는 그대로예요."
+          "lines": [
+            5,
+            5
+          ],
+          "text": "value를 저장한 다음 생성자 본문이 실행돼요. 나중에 base가 바뀌어도 다시 계산하지 않아요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false,
+          "lines": [
+            15,
+            15
+          ]
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "지금은 클래스의 공유 필드만 출력해요. 객체가 먼저 저장한 개인 필드를 봐야 해요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "첫 예제의 연결을 그림으로 짚어봐요. 주소 숫자 대신 어느 칸인지 표시했어요.",
+          "diagram": {
+            "title": "바꾸기 전 · 첫 예제 입력",
+            "rows": [
+              "Box.base: 3 → 13",
+              "item.value: base + 1 → 4"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 나중에 base를 바꿔도 이미 저장한 value는 그대로예요.",
+          "lines": [
+            15,
+            15
+          ]
         },
         {
           "action": "patch_code",
@@ -66,12 +99,37 @@
           "say": "생성된 객체의 필드를 읽어요. 필드 초기화 뒤 생성자가 한 일을 확인해요."
         },
         {
-          "action": "run"
+          "action": "run",
+          "lines": [
+            15,
+            15
+          ]
         },
         {
           "action": "say",
           "target": "output",
           "text": "객체에 남은 최종값을 확인하세요. 초기화식과 생성자의 실행 순서를 따라가야 해요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "같은 입력으로 바뀐 칸만 비교해 보세요. 코드의 왼쪽이 어느 칸인지 다시 짚어봐요.",
+          "diagram": {
+            "title": "바꾼 뒤 · 같은 첫 예제 입력",
+            "rows": [
+              "출력할 칸: item.value [4]",
+              "Box.base [13]과 구분해요"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            15,
+            15
+          ],
+          "text": "다른 예제 입력에서도 직접 실행해 보세요. 숫자가 달라도 같은 연결로 설명할 수 있나요?"
         },
         {
           "action": "submit"
@@ -105,11 +163,28 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static int seed;\n    static class Box {\n        // 최초 사용 때 한 번 실행해요.\n        static int total;\n        static { total = Main.seed + 1; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Main.seed = n;\n        // 처음 사용될 때 Box의 static 초기화가 실행돼요.\n        Box a = new Box();\n        Box b = new Box();\n        System.out.println(a.total + \" \" + b.total);\n    }\n}\n",
-          "say": "먼저 준비 코드를 실행해 볼게요."
+          "say": "먼저 입력과 변수의 연결을 살펴봐요.",
+          "lines": [
+            6,
+            6
+          ]
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            6,
+            6
+          ],
+          "text": "클래스 초기화와 객체 생성을 나눠 보세요. 객체 둘을 만들어도 static 블록은 반복하지 않아요."
         },
         {
           "action": "run",
-          "expected_failure": false
+          "expected_failure": false,
+          "lines": [
+            6,
+            6
+          ]
         },
         {
           "action": "say",
@@ -118,8 +193,24 @@
         },
         {
           "action": "say",
+          "target": "memory",
+          "text": "첫 예제의 연결을 그림으로 짚어봐요. 주소 숫자 대신 어느 칸인지 표시했어요.",
+          "diagram": {
+            "title": "바꾸기 전 · 첫 예제 입력",
+            "rows": [
+              "클래스 초기화 → total [4]",
+              "객체 a, b → 같은 total을 읽어요"
+            ]
+          }
+        },
+        {
+          "action": "say",
           "target": "editor",
-          "text": "조심하세요. 새 객체 생성은 클래스 초기화를 다시 실행하지 않아요."
+          "text": "조심하세요. 새 객체 생성은 클래스 초기화를 다시 실행하지 않아요.",
+          "lines": [
+            6,
+            6
+          ]
         },
         {
           "action": "patch_code",
@@ -128,12 +219,37 @@
           "say": "지정한 시작값 그대로 공유 필드에 넣어요. 객체마다 다른 값을 만드는 게 아니에요."
         },
         {
-          "action": "run"
+          "action": "run",
+          "lines": [
+            6,
+            6
+          ]
         },
         {
           "action": "say",
           "target": "output",
           "text": "두 객체로 읽은 공유값을 비교하세요. static 초기화는 클래스 초기화 때 한 번이에요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "같은 입력으로 바뀐 칸만 비교해 보세요. 코드의 왼쪽이 어느 칸인지 다시 짚어봐요.",
+          "diagram": {
+            "title": "바꾼 뒤 · 같은 첫 예제 입력",
+            "rows": [
+              "클래스 초기화 → total [3]",
+              "객체 a, b → 같은 total을 읽어요"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            6,
+            6
+          ],
+          "text": "다른 예제 입력에서도 직접 실행해 보세요. 숫자가 달라도 같은 연결로 설명할 수 있나요?"
         },
         {
           "action": "submit"
@@ -167,11 +283,28 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Base {\n        static int shared;\n        static int read() { return shared; }\n    }\n    static class Child extends Base {\n        // static 메서드 숨김이에요.\n        static int read() { return shared + 10; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Base.shared = n;\n        // 실제 객체는 Child지만 참조 타입은 Base예요.\n        Base ref = new Child();\n        System.out.println(Child.read());\n    }\n}\n",
-          "say": "먼저 준비 코드를 실행해 볼게요."
+          "say": "먼저 입력과 변수의 연결을 살펴봐요.",
+          "lines": [
+            16,
+            16
+          ]
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            16,
+            16
+          ],
+          "text": "static 호출은 선언한 자료형으로 정해요. 실제 객체가 자식이어도 이 규칙은 같아요."
         },
         {
           "action": "run",
-          "expected_failure": false
+          "expected_failure": false,
+          "lines": [
+            17,
+            17
+          ]
         },
         {
           "action": "say",
@@ -180,8 +313,24 @@
         },
         {
           "action": "say",
+          "target": "memory",
+          "text": "첫 예제의 연결을 그림으로 짚어봐요. 주소 숫자 대신 어느 칸인지 표시했어요.",
+          "diagram": {
+            "title": "바꾸기 전 · 첫 예제 입력",
+            "rows": [
+              "Child.read() → 자식 static 메서드",
+              "ref: 선언 Base / 실제 객체 Child"
+            ]
+          }
+        },
+        {
+          "action": "say",
           "target": "editor",
-          "text": "조심하세요. static 메서드 숨김과 인스턴스 오버라이딩은 달라요."
+          "text": "조심하세요. static 메서드 숨김과 인스턴스 오버라이딩은 달라요.",
+          "lines": [
+            17,
+            17
+          ]
         },
         {
           "action": "patch_code",
@@ -190,12 +339,37 @@
           "say": "부모 자료형인 참조를 통해 호출해요. static 메서드는 참조의 선언 자료형을 따라요."
         },
         {
-          "action": "run"
+          "action": "run",
+          "lines": [
+            17,
+            17
+          ]
         },
         {
           "action": "say",
           "target": "output",
           "text": "부모 쪽 메서드의 결과가 나왔는지 보세요. static 메서드 숨김은 오버라이딩과 달라요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "같은 입력으로 바뀐 칸만 비교해 보세요. 코드의 왼쪽이 어느 칸인지 다시 짚어봐요.",
+          "diagram": {
+            "title": "바꾼 뒤 · 같은 첫 예제 입력",
+            "rows": [
+              "ref.read() → Base.read()",
+              "정적 메서드는 클래스 이름으로 쓰면 더 분명해요"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            17,
+            17
+          ],
+          "text": "다른 예제 입력에서도 직접 실행해 보세요. 숫자가 달라도 같은 연결로 설명할 수 있나요?"
         },
         {
           "action": "submit"
@@ -229,11 +403,28 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Base {\n        static int shared;\n        int read() { return shared; }\n    }\n    static class Child extends Base {\n        // 실제 Child 객체의 메서드가 실행돼요.\n        int read() { return shared + 10; }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Base.shared = n;\n        Base ref = new Child();\n        // 부모를 새로 만들지 않고 준비된 객체를 호출해요.\n        System.out.println(new Base().read());\n    }\n}\n",
-          "say": "먼저 준비 코드를 실행해 볼게요."
+          "say": "먼저 입력과 변수의 연결을 살펴봐요.",
+          "lines": [
+            15,
+            15
+          ]
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            15,
+            15
+          ],
+          "text": "이번 메서드는 static이 아니에요. 실제 객체가 재정의한 메서드로 연결돼요."
         },
         {
           "action": "run",
-          "expected_failure": false
+          "expected_failure": false,
+          "lines": [
+            17,
+            17
+          ]
         },
         {
           "action": "say",
@@ -242,8 +433,24 @@
         },
         {
           "action": "say",
+          "target": "memory",
+          "text": "첫 예제의 연결을 그림으로 짚어봐요. 주소 숫자 대신 어느 칸인지 표시했어요.",
+          "diagram": {
+            "title": "바꾸기 전 · 첫 예제 입력",
+            "rows": [
+              "new Base().read() → 부모 메서드",
+              "ref → Child 객체"
+            ]
+          }
+        },
+        {
+          "action": "say",
           "target": "editor",
-          "text": "조심하세요. 변수 타입이 Base여도 이 호출은 Child의 read예요."
+          "text": "조심하세요. 변수 타입이 Base여도 이 호출은 Child의 read예요.",
+          "lines": [
+            17,
+            17
+          ]
         },
         {
           "action": "patch_code",
@@ -252,12 +459,37 @@
           "say": "ref가 가리키는 객체의 메서드를 불러요. 인스턴스 메서드의 선택을 확인해요."
         },
         {
-          "action": "run"
+          "action": "run",
+          "lines": [
+            17,
+            17
+          ]
         },
         {
           "action": "say",
           "target": "output",
           "text": "실제 자식 객체의 메서드가 실행됐어요. 인스턴스 메서드는 오버라이딩된 동작을 따라요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "같은 입력으로 바뀐 칸만 비교해 보세요. 코드의 왼쪽이 어느 칸인지 다시 짚어봐요.",
+          "diagram": {
+            "title": "바꾼 뒤 · 같은 첫 예제 입력",
+            "rows": [
+              "ref.read() → 자식 메서드",
+              "선언 Base / 실제 객체 Child"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            17,
+            17
+          ],
+          "text": "다른 예제 입력에서도 직접 실행해 보세요. 숫자가 달라도 같은 연결로 설명할 수 있나요?"
         },
         {
           "action": "submit"
@@ -291,11 +523,28 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Box {\n        // 같은 객체를 가리키면 같은 value를 읽어요.\n        int value;\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Box a = new Box();\n        a.value = n;\n        // 새 객체 대신 같은 참조를 전달해요.\n        Box b = new Box();\n        b.value += 2;\n        System.out.println(a.value);\n    }\n}\n",
-          "say": "먼저 준비 코드를 실행해 볼게요."
+          "say": "먼저 입력과 변수의 연결을 살펴봐요.",
+          "lines": [
+            13,
+            13
+          ]
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            13,
+            13
+          ],
+          "text": "new는 별도 객체를 만들어요. a를 대입하면 객체가 아닌 참조를 복사해요."
         },
         {
           "action": "run",
-          "expected_failure": false
+          "expected_failure": false,
+          "lines": [
+            13,
+            13
+          ]
         },
         {
           "action": "say",
@@ -304,8 +553,24 @@
         },
         {
           "action": "say",
+          "target": "memory",
+          "text": "첫 예제의 연결을 그림으로 짚어봐요. 주소 숫자 대신 어느 칸인지 표시했어요.",
+          "diagram": {
+            "title": "바꾸기 전 · 첫 예제 입력",
+            "rows": [
+              "a → 객체 A: value [3]",
+              "b → 객체 B: value [2]"
+            ]
+          }
+        },
+        {
+          "action": "say",
           "target": "editor",
-          "text": "조심하세요. static이 없어도 같은 객체를 가리키면 값이 공유돼요."
+          "text": "조심하세요. static이 없어도 같은 객체를 가리키면 값이 공유돼요.",
+          "lines": [
+            13,
+            13
+          ]
         },
         {
           "action": "patch_code",
@@ -314,12 +579,37 @@
           "say": "새 객체 대신 a의 참조를 b에 복사해요. 두 이름이 같은 객체를 가리키게 해요."
         },
         {
-          "action": "run"
+          "action": "run",
+          "lines": [
+            13,
+            13
+          ]
         },
         {
           "action": "say",
           "target": "output",
           "text": "한쪽에서 바꾼 값을 다른 쪽에서도 읽어요. 객체를 복사한 게 아니라 참조를 복사했어요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "같은 입력으로 바뀐 칸만 비교해 보세요. 코드의 왼쪽이 어느 칸인지 다시 짚어봐요.",
+          "diagram": {
+            "title": "바꾼 뒤 · 같은 첫 예제 입력",
+            "rows": [
+              "a, b → 같은 객체: value [5]",
+              "b로 바꾼 칸을 a로 읽어요"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            13,
+            13
+          ],
+          "text": "다른 예제 입력에서도 직접 실행해 보세요. 숫자가 달라도 같은 연결로 설명할 수 있나요?"
         },
         {
           "action": "submit"
@@ -353,11 +643,28 @@
         {
           "action": "set_code",
           "code": "class Main {\n    static class Ticket {\n        static int next;\n        int number;\n        Ticket() {\n            // 현재 번호를 저장한 다음 공통 번호를 늘려요.\n            number = next;\n            next++;\n        }\n    }\n\n    public static void main(String[] args) {\n        // 이번 실험의 시작값이에요.\n        int n = 3;\n        Ticket.next = n;\n        Ticket a = new Ticket();\n        Ticket b = new Ticket();\n        // 각 객체에 저장한 번호의 차이를 구해요.\n        System.out.println(Ticket.next - a.number + n);\n    }\n}\n",
-          "say": "먼저 준비 코드를 실행해 볼게요."
+          "say": "먼저 입력과 변수의 연결을 살펴봐요.",
+          "lines": [
+            16,
+            16
+          ]
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            16,
+            16
+          ],
+          "text": "생성할 때의 번호는 객체에 남아요. 공유 next만 다음 번호로 계속 움직여요."
         },
         {
           "action": "run",
-          "expected_failure": false
+          "expected_failure": false,
+          "lines": [
+            19,
+            19
+          ]
         },
         {
           "action": "say",
@@ -366,8 +673,24 @@
         },
         {
           "action": "say",
+          "target": "memory",
+          "text": "첫 예제의 연결을 그림으로 짚어봐요. 주소 숫자 대신 어느 칸인지 표시했어요.",
+          "diagram": {
+            "title": "바꾸기 전 · 첫 예제 입력",
+            "rows": [
+              "a.number [3] / b.number [4]",
+              "Ticket.next [5] / 기존 식 결과 5"
+            ]
+          }
+        },
+        {
+          "action": "say",
           "target": "editor",
-          "text": "조심하세요. next는 생성할 때 변하지만 저장한 number는 남아요."
+          "text": "조심하세요. next는 생성할 때 변하지만 저장한 number는 남아요.",
+          "lines": [
+            19,
+            19
+          ]
         },
         {
           "action": "patch_code",
@@ -376,12 +699,37 @@
           "say": "두 객체의 개인 번호로 차이를 구해요. 생성 시 저장한 번호를 비교하는 거예요."
         },
         {
-          "action": "run"
+          "action": "run",
+          "lines": [
+            19,
+            19
+          ]
         },
         {
           "action": "say",
           "target": "output",
           "text": "공유값과 각 객체의 번호를 따로 확인하세요. 생성 이후 공유값이 바뀌어도 저장한 번호는 남아요."
+        },
+        {
+          "action": "say",
+          "target": "memory",
+          "text": "같은 입력으로 바뀐 칸만 비교해 보세요. 코드의 왼쪽이 어느 칸인지 다시 짚어봐요.",
+          "diagram": {
+            "title": "바꾼 뒤 · 같은 첫 예제 입력",
+            "rows": [
+              "b.number − a.number + n → 4",
+              "공유 next와 저장한 번호는 달라요"
+            ]
+          }
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "lines": [
+            19,
+            19
+          ],
+          "text": "다른 예제 입력에서도 직접 실행해 보세요. 숫자가 달라도 같은 연결로 설명할 수 있나요?"
         },
         {
           "action": "submit"
